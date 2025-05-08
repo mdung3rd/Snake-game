@@ -6,12 +6,12 @@
 class Food {
 public:
     Food();
-    void spawn();                    // Tạo mồi ở vị trí ngẫu nhiên
-    void render(SDL_Renderer* renderer); // Vẽ mồi lên màn hình
-    SDL_Rect getRect() const;       // Lấy vị trí mồi
+    void spawn();
+    void render(SDL_Renderer* renderer);
+    SDL_Rect getRect() const;
 
 private:
-    SDL_Rect rect; // Hình chữ nhật đại diện cho mồi
+    SDL_Rect rect;
 };
 
-#endif // FOOD_H
+#endif

@@ -8,13 +8,12 @@ class Snake {
 public:
     Snake();
 
-    void update();                         // Di chuyển rắn
-    void render(SDL_Renderer* renderer);   // Vẽ rắn
-    void changeDirection(SDL_Keycode key); // Đổi hướng
-
+    void update();
+    void render(SDL_Renderer* renderer);
+    void changeDirection(SDL_Keycode key);
 private:
-    std::vector<SDL_Rect> body;  // Các đoạn thân rắn
-    int dx, dy;                  // Hướng di chuyển (delta x, y)
+    std::vector<SDL_Rect> body;
+    int dx, dy;
 };
 
 #endif
