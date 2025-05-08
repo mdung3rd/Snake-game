@@ -1,0 +1,37 @@
+# depslib dependency file v1.0
+1746638449 source:d:\c++\snake-game\snake game\game.cpp
+	"Game.h"
+	"Snake.h"
+	<SDL2/SDL.h>
+	<iostream>
+
+1746638158 d:\c++\snake-game\snake game\game.h
+
+1746614092 d:\c++\snake-game\snake game\snake.h
+	<vector>
+	<SDL2/SDL.h>
+
+1746633395 source:d:\c++\snake-game\snake game\main.cpp
+	"Game.h"
+
+1746614094 source:d:\c++\snake-game\snake game\snake.cpp
+	"Snake.h"
+
+1746614094 source:d:\c++\sdl\snake game\snake.cpp
+	"Snake.h"
+
+1746614092 d:\c++\sdl\snake game\snake.h
+	<vector>
+	<SDL2/SDL.h>
+
+1746633395 source:d:\c++\sdl\snake game\main.cpp
+	"Game.h"
+
+1746638158 d:\c++\sdl\snake game\game.h
+
+1746638449 source:d:\c++\sdl\snake game\game.cpp
+	"Game.h"
+	"Snake.h"
+	<SDL2/SDL.h>
+	<iostream>
+
