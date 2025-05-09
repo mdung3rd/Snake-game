@@ -21,6 +21,6 @@ void Food::render(SDL_Renderer* renderer) {
     SDL_RenderFillRect(renderer, &foodRect);
 }
 
-SDL_Rect Food::getRect() {
+SDL_Rect Food::getRect()const {
     return foodRect;
 }

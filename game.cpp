@@ -2,32 +2,34 @@
 #include "Snake.h"
 #include <SDL2/SDL.h>
 #include <iostream>
+#include "Food.h"
 
 void Game::run() {
 
     SDL_Window* window = SDL_CreateWindow(
         "Snake Game",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        640, 480,
+        1280, 720,
         SDL_WINDOW_SHOWN
     );
 
     if (window == nullptr) {
-        std::cerr << "Không thể tạo cửa sổ! SDL_Error: " << SDL_GetError() << std::endl;
+        std::cerr << " khong the tao cua so " << SDL_GetError() << std::endl;
         return;
     }
 
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr) {
-        std::cerr << "Không thể tạo renderer! SDL_Error: " << SDL_GetError() << std::endl;
+        std::cerr << "khong the tao cua so"  << SDL_GetError() << std::endl;
         SDL_DestroyWindow(window);
         return;
     }
 
 
     Snake snake;
-
+    Food food;
+    food.spawn();
 
     bool running = true;
     SDL_Event e;
@@ -40,17 +42,31 @@ void Game::run() {
             }
         }
 
-        snake.update();
+    SDL_Rect head = snake.getHead();
+    SDL_Rect foodRect = food.getRect();
+    bool ateFood = SDL_HasIntersection(&head, &foodRect);
 
+    if (ateFood) {
+        food.spawn();
+    }
+    snake.update(ateFood);
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //
-        SDL_RenderClear(renderer);
+    // va cham voi duoi -> game over
+    if (snake.isSelfCollision()) {
+        std::cout << "Game over" << std::endl;
+        running = false;
+    }
 
-        snake.render(renderer);
+    //don man hinh va ve lai
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
 
-        SDL_RenderPresent(renderer);
+    snake.render(renderer);
+    food.render(renderer);
 
-        SDL_Delay(100);
+    SDL_RenderPresent(renderer);
+
+    SDL_Delay(125);
     }
 
 

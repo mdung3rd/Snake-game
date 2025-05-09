@@ -12,6 +12,8 @@ public:
 
 private:
     SDL_Rect rect;
+    SDL_Rect foodRect;
+
 };
 
 #endif
