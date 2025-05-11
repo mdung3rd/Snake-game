@@ -3,6 +3,8 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include "Food.h"
+#include "Menu.h"
+#include <SDL2/SDL_image.h>
 
 void Game::run() {
 
@@ -26,6 +28,43 @@ void Game::run() {
         return;
     }
 
+    if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
+        std::cerr << "error " << SDL_GetError() << std::endl;
+        return;
+    }
+
+
+    SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "assets/images/menu.png");
+    if (!backgroundTexture) {
+        std::cerr << "Lỗi khi tải ảnh nền: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    Menu menu;
+    bool isMenuActive = true;
+
+    while (isMenuActive) {
+        SDL_Event e;
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT) {
+                isMenuActive = false;
+            }
+            menu.handleEvent(e);
+        }
+    SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+
+    menu.render(renderer);
+
+    if (menu.getSelectedOption() == 0) {
+
+        //khoi tao game o day
+
+        isMenuActive = false;
+
+    }
+
+        SDL_Delay(100);
+    }
 
     Snake snake;
     Food food;

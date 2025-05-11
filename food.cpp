@@ -12,8 +12,8 @@ void Food::spawn() {
 
     foodRect.w = 20;
     foodRect.h = 20;
-    foodRect.x = (std::rand() % (640 / 20)) * 20;
-    foodRect.y = (std::rand() % (480 / 20)) * 20;
+    foodRect.x = (std::rand() % (1280 / 20)) * 20;
+    foodRect.y = (std::rand() % (720 / 20)) * 20;
 }
 
 void Food::render(SDL_Renderer* renderer) {
