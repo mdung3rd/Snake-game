@@ -10,6 +10,7 @@ public:
     void render(SDL_Renderer* renderer);
     void handleEvent(SDL_Event& e);
     int getSelectedOption() const;
+    void handleMouseEvent(SDL_Event& e);
 
 private:
     int selectedOption;
