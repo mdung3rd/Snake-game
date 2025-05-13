@@ -35,14 +35,14 @@
 	<SDL2/SDL.h>
 	<iostream>
 
-1747033990 source:d:\c++\sdl\snake game\snake-game\game.cpp
+1747116071 source:d:\c++\sdl\snake game\snake-game\game.cpp
 	"Game.h"
 	"Snake.h"
-	<SDL2/SDL.h>
-	<iostream>
 	"Food.h"
-	"Menu.h"
+	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
+	<iostream>
+	"menu.h"
 
 1747033502 d:\c++\sdl\snake game\snake-game\game.h
 	<SDL2/SDL.h>
@@ -51,10 +51,10 @@
 	<vector>
 	<SDL2/SDL.h>
 
-1747035988 source:d:\c++\sdl\snake game\snake-game\main.cpp
+1747117295 source:d:\c++\sdl\snake game\snake-game\main.cpp
 	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
 	<iostream>
-	"Game.h"
 
 1746810378 source:d:\c++\sdl\snake game\snake-game\snake.cpp
 	"Snake.h"
@@ -67,7 +67,7 @@
 1746757885 d:\c++\sdl\snake game\snake-game\food.h
 	<SDL2/SDL.h>
 
-1747042436 source:d:\c++\sdl\snake game\snake-game\menu.cpp
+1747116361 source:d:\c++\sdl\snake game\snake-game\menu.cpp
 	"Menu.h"
 	<iostream>
 
