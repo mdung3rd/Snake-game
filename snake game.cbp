@@ -53,7 +53,11 @@
 		<Unit filename="SDL2_image.dll" />
 		<Unit filename="Snake.cpp" />
 		<Unit filename="Snake.h" />
+		<Unit filename="assets/images/levels.png" />
 		<Unit filename="assets/images/menu.png" />
+		<Unit filename="assets/images/new_game.png" />
+		<Unit filename="assets/images/quit.png" />
+		<Unit filename="assets/images/settings.png" />
 		<Unit filename="food.cpp" />
 		<Unit filename="food.h" />
 		<Unit filename="game.cpp" />

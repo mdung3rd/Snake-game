@@ -1,12 +1,14 @@
-#ifndef GAME_H
-#define GAME_H
-
+#pragma once
 #include <SDL2/SDL.h>
+#include "Snake.h"
+#include "Food.h"
 
 class Game {
 public:
-    void run();
+    Game();
+    ~Game();
     void startNewGame(SDL_Renderer* renderer);
+private:
+    Snake snake;
+    Food food;
 };
-
-#endif

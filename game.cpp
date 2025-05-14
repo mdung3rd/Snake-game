@@ -4,13 +4,14 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
-#include "menu.h"
+#include "Menu.h"
 
-void Game::startNewGame(SDL_Renderer* renderer) {
-    Snake snake;
-    Food food;
+Game::Game() {
     food.spawn();
-
+}
+Game::~Game() {
+}
+void Game::startNewGame(SDL_Renderer* renderer) {
     bool running = true;
     SDL_Event e;
     while (running) {
@@ -22,7 +23,6 @@ void Game::startNewGame(SDL_Renderer* renderer) {
             }
         }
 
-        // Game logic: ăn mồi, va chạm...
         SDL_Rect head = snake.getHead();
         SDL_Rect foodRect = food.getRect();
         bool ateFood = SDL_HasIntersection(&head, &foodRect);
@@ -32,13 +32,16 @@ void Game::startNewGame(SDL_Renderer* renderer) {
         }
         snake.update(ateFood);
 
-        // Kiểm tra va chạm
-        if (snake.isSelfCollision()) {
-            std::cout << "Game Over" << std::endl;
+        if (head.x < 0 || head.x >= 1280 || head.y < 0 || head.y >= 720) {
+            std::cout << "Game Over: Hit the wall!" << std::endl;
             running = false;
         }
 
-        // Vẽ game
+        if (snake.isSelfCollision()) {
+            std::cout << "Game Over: Self-collision!" << std::endl;
+            running = false;
+        }
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
@@ -49,3 +52,6 @@ void Game::startNewGame(SDL_Renderer* renderer) {
         SDL_Delay(125);
     }
 }
+
+
+

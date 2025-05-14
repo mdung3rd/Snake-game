@@ -1,21 +1,15 @@
 #ifndef MENU_H
 #define MENU_H
-
 #include <SDL2/SDL.h>
-#include <string>
 
 class Menu {
 public:
     Menu();
-    void render(SDL_Renderer* renderer);
-    void handleEvent(SDL_Event& e);
+    void handleEvent(const SDL_Event& e, const SDL_Rect& newGameButton, const SDL_Rect& settingsButton, const SDL_Rect& levelsButton, const SDL_Rect& quitButton);
     int getSelectedOption() const;
-    void handleMouseEvent(SDL_Event& e);
 
 private:
-    int selectedOption;
-    const std::string menuOptions[4] = {"New Game", "Levels", "Settings", "Quit"};
+    int selectedOption; // 0: New Game, 1: Levels, 2: Settings, 3: Quit, -1: None
 };
 
 #endif
-
