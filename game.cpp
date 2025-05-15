@@ -32,13 +32,8 @@ void Game::startNewGame(SDL_Renderer* renderer) {
         }
         snake.update(ateFood);
 
-        if (head.x < 0 || head.x >= 1280 || head.y < 0 || head.y >= 720) {
-            std::cout << "Game Over: Hit the wall!" << std::endl;
-            running = false;
-        }
-
         if (snake.isSelfCollision()) {
-            std::cout << "Game Over: Self-collision!" << std::endl;
+            std::cout << "Game Over" << std::endl;
             running = false;
         }
 

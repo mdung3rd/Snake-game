@@ -9,7 +9,7 @@ public:
     int getSelectedOption() const;
 
 private:
-    int selectedOption; // 0: New Game, 1: Levels, 2: Settings, 3: Quit, -1: None
+    int selectedOption;
 };
 
 #endif

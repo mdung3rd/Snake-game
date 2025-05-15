@@ -7,12 +7,11 @@ void Menu::handleEvent(const SDL_Event& e, const SDL_Rect& newGameButton, const 
         int x = e.button.x;
         int y = e.button.y;
 
-        // Check if the click is within the "New Game" button
         if (x >= newGameButton.x && x <= newGameButton.x + newGameButton.w &&
             y >= newGameButton.y && y <= newGameButton.y + newGameButton.h) {
             selectedOption = 0; // New Game
         }
-        // Check other buttons
+
         else if (x >= settingsButton.x && x <= settingsButton.x + settingsButton.w &&
                  y >= settingsButton.y && y <= settingsButton.y + settingsButton.h) {
             selectedOption = 2; // Settings
