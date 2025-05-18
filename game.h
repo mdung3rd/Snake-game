@@ -5,7 +5,7 @@
 
 class Game {
 public:
-    Game();
+    Game(SDL_Renderer* renderer);
     ~Game();
     void startNewGame(SDL_Renderer* renderer);
 private:

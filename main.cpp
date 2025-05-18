@@ -5,10 +5,10 @@
 #include "Menu.h"
 
 void showMenu(SDL_Renderer* renderer) {
-
+    // Load textures
     SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "assets/images/menu.png");
     if (!backgroundTexture) {
-        std::cerr << "khong tai duoc anh nen " << SDL_GetError() << std::endl;
+        std::cerr << "khong tai duoc anh " << SDL_GetError() << std::endl;
         return;
     }
 
@@ -18,7 +18,7 @@ void showMenu(SDL_Renderer* renderer) {
     SDL_Texture* quitTexture = IMG_LoadTexture(renderer, "assets/images/quit.png");
 
     if (!newGameTexture || !settingsTexture || !levelsTexture || !quitTexture) {
-        std::cerr << "khong tai duoc cac nut menu " << SDL_GetError() << std::endl;
+        std::cerr << "khong tai duoc menu: " << SDL_GetError() << std::endl;
         SDL_DestroyTexture(backgroundTexture);
         return;
     }
@@ -49,17 +49,19 @@ void showMenu(SDL_Renderer* renderer) {
         SDL_RenderCopy(renderer, levelsTexture, NULL, &levelsButton);
         SDL_RenderCopy(renderer, quitTexture, NULL, &quitButton);
 
+
         int selectedOption = menu.getSelectedOption();
         if (selectedOption == 0) {
             isMenuActive = false;
-            Game game;
+            Game game(renderer);
             game.startNewGame(renderer);
         } else if (selectedOption == 1) {
+
             std::cout << "Levels selected" << std::endl;
         } else if (selectedOption == 2) {
+            // Handle settings (placeholder)
             std::cout << "Settings selected" << std::endl;
         } else if (selectedOption == 3) {
-            // quit
             isMenuActive = false;
         }
 
@@ -67,6 +69,7 @@ void showMenu(SDL_Renderer* renderer) {
         SDL_Delay(10);
     }
 
+    // Clean up textures
     SDL_DestroyTexture(backgroundTexture);
     SDL_DestroyTexture(newGameTexture);
     SDL_DestroyTexture(settingsTexture);
@@ -75,18 +78,16 @@ void showMenu(SDL_Renderer* renderer) {
 }
 
 int main(int argc, char* argv[]) {
-
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "khong khoi tao duoc sdl " << SDL_GetError() << std::endl;
+        std::cerr << "khong khoi tao duoc " << SDL_GetError() << std::endl;
         return 1;
     }
 
     if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
-        std::cerr << "khong tao sdl image " << SDL_GetError() << std::endl;
+        std::cerr << "khong khoi tao duoc: " << SDL_GetError() << std::endl;
         SDL_Quit();
         return 1;
     }
-
 
     SDL_Window* window = SDL_CreateWindow(
         "Snake Game",
@@ -95,16 +96,15 @@ int main(int argc, char* argv[]) {
         SDL_WINDOW_SHOWN
     );
     if (!window) {
-        std::cerr << "khong tao duoc cua so " << SDL_GetError() << std::endl;
+        std::cerr << "Không tạo được cửa sổ: " << SDL_GetError() << std::endl;
         IMG_Quit();
         SDL_Quit();
         return 1;
     }
 
-
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
-        std::cerr << "render bi loi " << SDL_GetError() << std::endl;
+        std::cerr << "loi render " << SDL_GetError() << std::endl;
         SDL_DestroyWindow(window);
         IMG_Quit();
         SDL_Quit();
@@ -112,7 +112,6 @@ int main(int argc, char* argv[]) {
     }
 
     showMenu(renderer);
-
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

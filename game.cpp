@@ -6,7 +6,12 @@
 #include <iostream>
 #include "Menu.h"
 
-Game::Game() : specialFoodActive(false), score(0) {
+Game::Game(SDL_Renderer* renderer)
+    : snake(renderer),
+      food(renderer),
+      specialFood(renderer),
+      specialFoodActive(false),
+      score(0) {
     food.spawn();
     lastSpecialFoodTime = SDL_GetTicks();
 }
@@ -26,7 +31,6 @@ void Game::startNewGame(SDL_Renderer* renderer) {
             }
         }
 
-        // Cập nhật thời gian cho mồi đặc biệt
         Uint32 currentTime = SDL_GetTicks();
         if (currentTime - lastSpecialFoodTime >= 15000 && !specialFoodActive) {
             specialFood.spawn();
@@ -38,12 +42,11 @@ void Game::startNewGame(SDL_Renderer* renderer) {
             specialFoodActive = false;
         }
 
-        // Kiểm tra va chạm
         SDL_Rect head = snake.getHead();
         SDL_Rect foodRect = food.getRect();
         SDL_Rect specialFoodRect = specialFood.getRect();
         bool ateFood = SDL_HasIntersection(&head, &foodRect);
-        bool ateSpecialFood = specialFoodActive && SDL_HasIntersection(&head, &specialFoodRect); // Sử dụng biến tạm
+        bool ateSpecialFood = specialFoodActive && SDL_HasIntersection(&head, &specialFoodRect);
 
         if (ateFood) {
             score += 1;
@@ -66,14 +69,13 @@ void Game::startNewGame(SDL_Renderer* renderer) {
             running = false;
         }
 
-        // Vẽ
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
         snake.render(renderer);
         food.render(renderer);
         if (specialFoodActive) {
-            specialFood.render(renderer, true); // ve moi dac biet
+            specialFood.render(renderer, true);
         }
 
         SDL_RenderPresent(renderer);

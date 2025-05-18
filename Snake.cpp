@@ -1,22 +1,44 @@
 #include "Snake.h"
+#include <SDL2/SDL_image.h>
+#include <iostream>
 
-Snake::Snake() {
-
+Snake::Snake(SDL_Renderer* renderer) : dx(20), dy(0) {
     SDL_Rect head = {320, 240, 20, 20};
     body.push_back(head);
+    directions.push_back({dx, dy});
+    // tao o than 1
+    SDL_Rect bodySegment1 = head;
+    bodySegment1.x -= dx;
+    bodySegment1.y -= dy;
+    body.push_back(bodySegment1);
+    directions.push_back({dx, dy});
+    // tao o than 2
+    SDL_Rect bodySegment2 = bodySegment1;
+    bodySegment2.x -= dx;
+    bodySegment2.y -= dy;
+    body.push_back(bodySegment2);
+    directions.push_back({dx, dy});
 
+    headTexture = IMG_LoadTexture(renderer, "assets/images/head.png");
+    bodyTexture = IMG_LoadTexture(renderer, "assets/images/body.png");
+    tailTexture = IMG_LoadTexture(renderer, "assets/images/tail.png");
 
-    dx = 20;
-    dy = 0;
+    if (!headTexture) std::cerr << "Không tải được head.png: " << SDL_GetError() << std::endl;
+    if (!bodyTexture) std::cerr << "Không tải được body.png: " << SDL_GetError() << std::endl;
+    if (!tailTexture) std::cerr << "Không tải được tail.png: " << SDL_GetError() << std::endl;
+}
+
+Snake::~Snake() {
+    SDL_DestroyTexture(headTexture);
+    SDL_DestroyTexture(bodyTexture);
+    SDL_DestroyTexture(tailTexture);
 }
 
 void Snake::update(bool ateFood) {
-
     SDL_Rect newHead = body[0];
     newHead.x += dx;
     newHead.y += dy;
 
-    //update vi tri ran sau khi di qua khung hinh
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
     if (newHead.x >= SCREEN_WIDTH) {
@@ -31,23 +53,51 @@ void Snake::update(bool ateFood) {
     }
 
     body.insert(body.begin(), newHead);
+    directions.insert(directions.begin(), {dx, dy});
 
-    // neu chua an duoc moi thi xoa phan duoi
     if (!ateFood) {
         body.pop_back();
+        directions.pop_back();
     }
-
 }
 
 void Snake::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    for (SDL_Rect segment : body) {
-        SDL_RenderFillRect(renderer, &segment);
+    for (size_t i = 0; i < body.size(); ++i) {
+        SDL_Texture* texture = bodyTexture;
+        double angle = 0.0;
+
+        // xac dinh goc xoay
+        if (i == 0) {
+            texture = headTexture;
+            if (dx == 20 && dy == 0) angle = 0;
+            else if (dx == -20 && dy == 0) angle = 180;
+            else if (dx == 0 && dy == -20) angle = 270;
+            else if (dx == 0 && dy == 20) angle = 90;
+        } else if (i == body.size() - 1) {
+            texture = tailTexture;
+            auto [tailDx, tailDy] = directions[i];
+            if (tailDx == 20 && tailDy == 0) angle = 0;
+            else if (tailDx == -20 && tailDy == 0) angle = 180;
+            else if (tailDx == 0 && tailDy == -20) angle = 270;
+            else if (tailDx == 0 && tailDy == 20) angle = 90;
+        } else {
+            auto [bodyDx, bodyDy] = directions[i];
+            if (bodyDx == 20 && bodyDy == 0) angle = 0;
+            else if (bodyDx == -20 && bodyDy == 0) angle = 180;
+            else if (bodyDx == 0 && bodyDy == -20) angle = 270;
+            else if (bodyDx == 0 && bodyDy == 20) angle = 90;
+        }
+
+        if (!texture) {
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            SDL_RenderFillRect(renderer, &body[i]);
+        } else {
+            SDL_RenderCopyEx(renderer, texture, nullptr, &body[i], angle, nullptr, SDL_FLIP_NONE);
+        }
     }
 }
 
 void Snake::changeDirection(SDL_Keycode key) {
-
     switch (key) {
         case SDLK_UP:
             if (dy == 0) { dx = 0; dy = -20; }
@@ -67,6 +117,11 @@ void Snake::changeDirection(SDL_Keycode key) {
 SDL_Rect Snake::getHead() const {
     return body.front();
 }
+
+const std::vector<SDL_Rect>& Snake::getBody() const {
+    return body;
+}
+
 bool Snake::isSelfCollision() const {
     const SDL_Rect& head = body.front();
     for (size_t i = 1; i < body.size(); ++i) {
@@ -76,4 +131,3 @@ bool Snake::isSelfCollision() const {
     }
     return false;
 }
-
