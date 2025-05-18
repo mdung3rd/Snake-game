@@ -7,13 +7,11 @@ class Food {
 public:
     Food();
     void spawn();
-    void render(SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer, bool isSpecial = false) const;
     SDL_Rect getRect() const;
 
 private:
-    SDL_Rect rect;
     SDL_Rect foodRect;
-
 };
 
 #endif

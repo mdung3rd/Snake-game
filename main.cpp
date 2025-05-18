@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Game.h"
 #include "Menu.h"
-#include <vector>
+
 void showMenu(SDL_Renderer* renderer) {
 
     SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "assets/images/menu.png");
@@ -66,7 +66,6 @@ void showMenu(SDL_Renderer* renderer) {
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
     }
-
 
     SDL_DestroyTexture(backgroundTexture);
     SDL_DestroyTexture(newGameTexture);

@@ -6,11 +6,14 @@
 #include <iostream>
 #include "Menu.h"
 
-Game::Game() {
+Game::Game() : specialFoodActive(false), score(0) {
     food.spawn();
+    lastSpecialFoodTime = SDL_GetTicks();
 }
+
 Game::~Game() {
 }
+
 void Game::startNewGame(SDL_Renderer* renderer) {
     bool running = true;
     SDL_Event e;
@@ -23,30 +26,57 @@ void Game::startNewGame(SDL_Renderer* renderer) {
             }
         }
 
+        // Cập nhật thời gian cho mồi đặc biệt
+        Uint32 currentTime = SDL_GetTicks();
+        if (currentTime - lastSpecialFoodTime >= 15000 && !specialFoodActive) {
+            specialFood.spawn();
+            specialFoodActive = true;
+            specialFoodSpawnTime = currentTime;
+            lastSpecialFoodTime = currentTime;
+        }
+        if (specialFoodActive && currentTime - specialFoodSpawnTime >= 4000) {
+            specialFoodActive = false;
+        }
+
+        // Kiểm tra va chạm
         SDL_Rect head = snake.getHead();
         SDL_Rect foodRect = food.getRect();
+        SDL_Rect specialFoodRect = specialFood.getRect();
         bool ateFood = SDL_HasIntersection(&head, &foodRect);
+        bool ateSpecialFood = specialFoodActive && SDL_HasIntersection(&head, &specialFoodRect); // Sử dụng biến tạm
 
         if (ateFood) {
+            score += 1;
             food.spawn();
+            snake.update(true);
         }
-        snake.update(ateFood);
+        if (ateSpecialFood) {
+            score += 4;
+            for (int i = 0; i < 4; ++i) {
+                snake.update(true);
+            }
+            specialFoodActive = false;
+        }
+        if (!ateFood && !ateSpecialFood) {
+            snake.update(false);
+        }
 
         if (snake.isSelfCollision()) {
-            std::cout << "Game Over" << std::endl;
+            std::cout << "Game Over. Score: " << score << std::endl;
             running = false;
         }
 
+        // Vẽ
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
         snake.render(renderer);
         food.render(renderer);
+        if (specialFoodActive) {
+            specialFood.render(renderer, true); // ve moi dac biet
+        }
 
         SDL_RenderPresent(renderer);
         SDL_Delay(125);
     }
 }
-
-
-

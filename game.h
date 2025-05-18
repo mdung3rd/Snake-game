@@ -11,4 +11,9 @@ public:
 private:
     Snake snake;
     Food food;
+    Food specialFood;
+    bool specialFoodActive;
+    Uint32 specialFoodSpawnTime;
+    Uint32 lastSpecialFoodTime;
+    int score;
 };
