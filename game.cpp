@@ -38,7 +38,7 @@ void Game::startNewGame(SDL_Renderer* renderer) {
             specialFoodSpawnTime = currentTime;
             lastSpecialFoodTime = currentTime;
         }
-        if (specialFoodActive && currentTime - specialFoodSpawnTime >= 4000) {
+        if (specialFoodActive && currentTime - specialFoodSpawnTime >= 8000) {
             specialFoodActive = false;
         }
 
