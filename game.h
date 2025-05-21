@@ -7,7 +7,10 @@ class Game {
 public:
     Game(SDL_Renderer* renderer);
     ~Game();
-    void startNewGame(SDL_Renderer* renderer);
+    void startNewGame(SDL_Renderer* renderer, int delayMs);
+    bool isPaused() const;
+    bool isExitToMenu() const;
+
 private:
     Snake snake;
     Food food;
@@ -16,4 +19,9 @@ private:
     Uint32 specialFoodSpawnTime;
     Uint32 lastSpecialFoodTime;
     int score;
+    bool paused;
+    bool exitToMenu;
+    SDL_Renderer* renderer;
+    SDL_Texture* notificationTexture;
+    SDL_Rect notificationRect;
 };

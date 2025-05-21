@@ -3,16 +3,17 @@
 #include <iostream>
 
 Snake::Snake(SDL_Renderer* renderer) : dx(20), dy(0) {
+
     SDL_Rect head = {320, 240, 20, 20};
     body.push_back(head);
     directions.push_back({dx, dy});
-    // tao o than 1
+
     SDL_Rect bodySegment1 = head;
     bodySegment1.x -= dx;
     bodySegment1.y -= dy;
     body.push_back(bodySegment1);
     directions.push_back({dx, dy});
-    // tao o than 2
+
     SDL_Rect bodySegment2 = bodySegment1;
     bodySegment2.x -= dx;
     bodySegment2.y -= dy;
@@ -39,6 +40,7 @@ void Snake::update(bool ateFood) {
     newHead.x += dx;
     newHead.y += dy;
 
+    //xu li ra ngoai man hinh
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
     if (newHead.x >= SCREEN_WIDTH) {
@@ -65,8 +67,7 @@ void Snake::render(SDL_Renderer* renderer) {
     for (size_t i = 0; i < body.size(); ++i) {
         SDL_Texture* texture = bodyTexture;
         double angle = 0.0;
-
-        // xac dinh goc xoay
+        //xac dinh goc quay
         if (i == 0) {
             texture = headTexture;
             if (dx == 20 && dy == 0) angle = 0;
@@ -81,6 +82,7 @@ void Snake::render(SDL_Renderer* renderer) {
             else if (tailDx == 0 && tailDy == -20) angle = 270;
             else if (tailDx == 0 && tailDy == 20) angle = 90;
         } else {
+
             auto [bodyDx, bodyDy] = directions[i];
             if (bodyDx == 20 && bodyDy == 0) angle = 0;
             else if (bodyDx == -20 && bodyDy == 0) angle = 180;

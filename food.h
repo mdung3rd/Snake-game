@@ -13,8 +13,8 @@ public:
 
 private:
     SDL_Rect foodRect;
-    SDL_Texture* foodTexture;    // Giữ để tương thích, nhưng không dùng
-    SDL_Texture* specialFoodTexture; // Giữ để tương thích, nhưng không dùng
+    SDL_Texture* foodTexture;
+    SDL_Texture* specialFoodTexture;
 };
 
 #endif

@@ -15,7 +15,8 @@ public:
 
 private:
     std::vector<SDL_Rect> body;
-    std::vector<std::pair<int, int>> directions; // Lưu dx, dy của từng đoạn
+    std::vector<std::pair<int, int>> directions; // luu toa do cua tung doan
+    std::vector<double> angles;
     int dx, dy;
     SDL_Texture* headTexture;
     SDL_Texture* bodyTexture;

@@ -53,11 +53,14 @@
 		<Unit filename="SDL2_image.dll" />
 		<Unit filename="Snake.cpp" />
 		<Unit filename="Snake.h" />
+		<Unit filename="assets/images/back.png" />
 		<Unit filename="assets/images/body.png" />
 		<Unit filename="assets/images/head.png" />
 		<Unit filename="assets/images/levels.png" />
 		<Unit filename="assets/images/menu.png" />
 		<Unit filename="assets/images/new_game.png" />
+		<Unit filename="assets/images/notification.png" />
+		<Unit filename="assets/images/notification2.png" />
 		<Unit filename="assets/images/quit.png" />
 		<Unit filename="assets/images/settings.png" />
 		<Unit filename="assets/images/tail.png" />

@@ -8,7 +8,7 @@ void showMenu(SDL_Renderer* renderer) {
     // Load textures
     SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "assets/images/menu.png");
     if (!backgroundTexture) {
-        std::cerr << "khong tai duoc anh " << SDL_GetError() << std::endl;
+        std::cerr << "tai anh nen bi loi " << SDL_GetError() << std::endl;
         return;
     }
 
@@ -16,9 +16,15 @@ void showMenu(SDL_Renderer* renderer) {
     SDL_Texture* settingsTexture = IMG_LoadTexture(renderer, "assets/images/settings.png");
     SDL_Texture* levelsTexture = IMG_LoadTexture(renderer, "assets/images/levels.png");
     SDL_Texture* quitTexture = IMG_LoadTexture(renderer, "assets/images/quit.png");
+    SDL_Texture* easyTexture = IMG_LoadTexture(renderer, "assets/images/easy.png");
+    SDL_Texture* hardTexture = IMG_LoadTexture(renderer, "assets/images/hard.png");
+    SDL_Texture* specialTexture = IMG_LoadTexture(renderer, "assets/images/special.png");
+    SDL_Texture* backTexture = IMG_LoadTexture(renderer, "assets/images/back.png");
+    SDL_Texture* notificationTexture = IMG_LoadTexture(renderer, "assets/images/notification.png");
 
-    if (!newGameTexture || !settingsTexture || !levelsTexture || !quitTexture) {
-        std::cerr << "khong tai duoc menu: " << SDL_GetError() << std::endl;
+    if (!newGameTexture || !settingsTexture || !levelsTexture || !quitTexture ||
+        !easyTexture || !hardTexture || !specialTexture || !backTexture || !notificationTexture) {
+        std::cerr << "tai menu bi loi " << SDL_GetError() << std::endl;
         SDL_DestroyTexture(backgroundTexture);
         return;
     }
@@ -27,64 +33,197 @@ void showMenu(SDL_Renderer* renderer) {
     SDL_Rect settingsButton = {200, 270, 300, 100};
     SDL_Rect levelsButton = {200, 390, 300, 100};
     SDL_Rect quitButton = {200, 510, 300, 100};
+    SDL_Rect easyButton = {200, 150, 300, 100};
+    SDL_Rect hardButton = {200, 270, 300, 100};
+    SDL_Rect specialButton = {200, 390, 300, 100};
+    SDL_Rect backButton = {1100, 600, 150, 100};
+    SDL_Rect notificationRect = {640 - 150, 50, 300, 80};
 
-    Menu menu;
     bool isMenuActive = true;
-
     while (isMenuActive) {
-        SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                isMenuActive = false;
+
+        Menu menu;
+        bool isLevelsMenuActive = false;
+        bool isSettingsMenuActive = false;
+        int selectedLevel = -1; // chon level trc khi new game
+        bool showNotification = false;
+        bool hasNotified = false;
+
+        while (isMenuActive) {
+            SDL_Event e;
+            while (SDL_PollEvent(&e)) {
+                if (e.type == SDL_QUIT) {
+                    isMenuActive = false;
+                }
+                if (!isLevelsMenuActive && !isSettingsMenuActive) {
+                    menu.handleEvent(e, newGameButton, settingsButton, levelsButton, quitButton,
+                                   easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
+                } else {
+                    menu.handleEvent(e, easyButton, hardButton, specialButton, quitButton,
+                                   easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
+                }
             }
 
-            menu.handleEvent(e, newGameButton, settingsButton, levelsButton, quitButton);
+
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderClear(renderer);
+
+            if (isLevelsMenuActive) {
+                easyButton.w = 300; easyButton.h = 100;
+                hardButton.w = 300; hardButton.h = 100;
+                specialButton.w = 300; specialButton.h = 100;
+
+                if (selectedLevel == 10) {
+                    easyButton.w = 330; easyButton.h = 110;
+                    easyButton.x = 200 - (330 - 300) / 2;
+                    easyButton.y = 150 - (110 - 100) / 2;
+                } else if (selectedLevel == 11) {
+                    hardButton.w = 330; hardButton.h = 110;
+                    hardButton.x = 200 - (330 - 300) / 2;
+                    hardButton.y = 270 - (110 - 100) / 2;
+                } else if (selectedLevel == 12) {
+                    specialButton.w = 330; specialButton.h = 110;
+                    specialButton.x = 200 - (330 - 300) / 2;
+                    specialButton.y = 390 - (110 - 100) / 2;
+                }
+            }
+
+            if (!isLevelsMenuActive && !isSettingsMenuActive) {
+                SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+                SDL_RenderCopy(renderer, newGameTexture, NULL, &newGameButton);
+                SDL_RenderCopy(renderer, settingsTexture, NULL, &settingsButton);
+                SDL_RenderCopy(renderer, levelsTexture, NULL, &levelsButton);
+                SDL_RenderCopy(renderer, quitTexture, NULL, &quitButton);
+            } else if (isLevelsMenuActive) {
+                SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+                SDL_RenderCopy(renderer, easyTexture, NULL, &easyButton);
+                SDL_RenderCopy(renderer, hardTexture, NULL, &hardButton);
+                SDL_RenderCopy(renderer, specialTexture, NULL, &specialButton);
+                SDL_RenderCopy(renderer, backTexture, NULL, &backButton);
+            } else if (isSettingsMenuActive) {
+                SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+                SDL_RenderCopy(renderer, backTexture, NULL, &backButton);
+            }
+
+
+            if (showNotification && selectedLevel == -1) {
+                if (notificationTexture) {
+                    SDL_RenderCopy(renderer, notificationTexture, NULL, &notificationRect);
+                }
+            } else {
+                showNotification = false;
+                hasNotified = false;
+            }
+
+            int selectedOption = menu.getSelectedOption();
+            if (selectedOption != -1) {
+                if (selectedOption == 0) { // new game
+                    if (selectedLevel == -1) {
+                        if (!hasNotified) {
+                            std::cout << "choose level!" << std::endl;
+                            hasNotified = true;
+                        }
+                        showNotification = true;
+                    } else if (selectedLevel == 10) { // Easy
+                        std::cout << "game started(easy mode)" << std::endl;
+                        isMenuActive = false;
+                        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                        SDL_RenderClear(renderer);
+                        SDL_RenderPresent(renderer);
+                        Game game(renderer);
+                        game.startNewGame(renderer, 125);
+                        if (game.isExitToMenu()) {
+                            isMenuActive = true;
+                            break;
+                        }
+                    } else if (selectedLevel == 11) { // Hard
+                        std::cout << "game started(hard mode)" << std::endl;
+                        isMenuActive = false;
+                        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                        SDL_RenderClear(renderer);
+                        SDL_RenderPresent(renderer);
+                        Game game(renderer);
+                        game.startNewGame(renderer, 75);
+                        if (game.isExitToMenu()) {
+                            isMenuActive = true;
+                            break;
+                        }
+                    } else if (selectedLevel == 12) { // spec
+                        std::cout << "special mode started" << std::endl;
+                        isMenuActive = false;
+                        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                        SDL_RenderClear(renderer);
+                        SDL_RenderPresent(renderer);
+                        Game game(renderer);
+                        game.startNewGame(renderer, 100);
+                        if (game.isExitToMenu()) {
+                            isMenuActive = true;
+                            break;
+                        }
+                    }
+                } else if (selectedOption == 1) { // Levels
+                    std::cout << "Opening Levels menu" << std::endl;
+                    isLevelsMenuActive = true;
+                    menu = Menu();
+                } else if (selectedOption == 2) { // Settings
+                    std::cout << "Opening Settings menu" << std::endl;
+                    isSettingsMenuActive = true;
+                    menu = Menu();
+                } else if (selectedOption == 3) { // Quit
+                    std::cout << "Quit selected" << std::endl;
+                    isMenuActive = false;
+                } else if (selectedOption == 4) { // Back
+                    std::cout << "Returning to main menu" << std::endl;
+                    isLevelsMenuActive = false;
+                    isSettingsMenuActive = false;
+                    menu = Menu();
+                } else if (isLevelsMenuActive) {
+                    if (selectedOption == 10) { // Easy
+                        std::cout << "Selected Easy mode" << std::endl;
+                        selectedLevel = 10;
+                        menu = Menu();
+                    } else if (selectedOption == 11) { // Hard
+                        std::cout << "Selected Hard mode" << std::endl;
+                        selectedLevel = 11;
+                        menu = Menu();
+                    } else if (selectedOption == 12) { // Special
+                        std::cout << "Selected Special mode" << std::endl;
+                        selectedLevel = 12;
+                        menu = Menu();
+                    }
+                }
+            }
+
+            SDL_RenderPresent(renderer);
+            if (SDL_GetError()[0] != '\0') {
+                std::cerr << "Renderer error in menu: " << SDL_GetError() << std::endl;
+                SDL_ClearError();
+            }
+            SDL_Delay(10);
         }
-
-        SDL_RenderClear(renderer);
-
-        SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
-        SDL_RenderCopy(renderer, newGameTexture, NULL, &newGameButton);
-        SDL_RenderCopy(renderer, settingsTexture, NULL, &settingsButton);
-        SDL_RenderCopy(renderer, levelsTexture, NULL, &levelsButton);
-        SDL_RenderCopy(renderer, quitTexture, NULL, &quitButton);
-
-
-        int selectedOption = menu.getSelectedOption();
-        if (selectedOption == 0) {
-            isMenuActive = false;
-            Game game(renderer);
-            game.startNewGame(renderer);
-        } else if (selectedOption == 1) {
-
-            std::cout << "Levels selected" << std::endl;
-        } else if (selectedOption == 2) {
-            // Handle settings (placeholder)
-            std::cout << "Settings selected" << std::endl;
-        } else if (selectedOption == 3) {
-            isMenuActive = false;
-        }
-
-        SDL_RenderPresent(renderer);
-        SDL_Delay(10);
     }
 
-    // Clean up textures
+
     SDL_DestroyTexture(backgroundTexture);
     SDL_DestroyTexture(newGameTexture);
     SDL_DestroyTexture(settingsTexture);
     SDL_DestroyTexture(levelsTexture);
     SDL_DestroyTexture(quitTexture);
+    SDL_DestroyTexture(easyTexture);
+    SDL_DestroyTexture(hardTexture);
+    SDL_DestroyTexture(specialTexture);
+    SDL_DestroyTexture(backTexture);
+    SDL_DestroyTexture(notificationTexture);
 }
 
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "khong khoi tao duoc " << SDL_GetError() << std::endl;
+        std::cerr << "Không khởi tạo được SDL: " << SDL_GetError() << std::endl;
         return 1;
     }
 
     if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
-        std::cerr << "khong khoi tao duoc: " << SDL_GetError() << std::endl;
+        std::cerr << "Không tạo SDL image: " << SDL_GetError() << std::endl;
         SDL_Quit();
         return 1;
     }
@@ -96,7 +235,7 @@ int main(int argc, char* argv[]) {
         SDL_WINDOW_SHOWN
     );
     if (!window) {
-        std::cerr << "Không tạo được cửa sổ: " << SDL_GetError() << std::endl;
+        std::cerr << "khong tao duoc cua so " << SDL_GetError() << std::endl;
         IMG_Quit();
         SDL_Quit();
         return 1;
@@ -104,7 +243,7 @@ int main(int argc, char* argv[]) {
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
-        std::cerr << "loi render " << SDL_GetError() << std::endl;
+        std::cerr << "render bi loi " << SDL_GetError() << std::endl;
         SDL_DestroyWindow(window);
         IMG_Quit();
         SDL_Quit();
