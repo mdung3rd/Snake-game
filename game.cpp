@@ -4,9 +4,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include "Menu.h"
 
-Game::Game(SDL_Renderer* renderer)
+Game::Game(SDL_Renderer* renderer, int mode)
     : snake(renderer),
       food(renderer),
       specialFood(renderer),
@@ -14,24 +16,39 @@ Game::Game(SDL_Renderer* renderer)
       score(0),
       paused(false),
       exitToMenu(false),
-      renderer(renderer) {
+      renderer(renderer),
+      gameMode(mode),
+      currentDelayMs(0),
+      lastSpeedChangeTime(0) {
     food.spawn();
     lastSpecialFoodTime = SDL_GetTicks();
-    // thong bao2
+    lastSpeedChangeTime = SDL_GetTicks(); // Khởi tạo thời gian thay đổi tốc độ
+    // Khởi tạo seed cho số ngẫu nhiên
+    srand(static_cast<unsigned int>(time(nullptr)));
+    // Thong bao
     notificationTexture = IMG_LoadTexture(renderer, "assets/images/notification2.png");
     if (!notificationTexture) {
         std::cerr << "khong tai duoc thong bao 2 " << SDL_GetError() << std::endl;
     }
     notificationRect = {640 - 150, 50, 300, 80};
+    // Tai texture nen
+    backgroundTexture = IMG_LoadTexture(renderer, "assets/images/backgroundingame.png");
+    if (!backgroundTexture) {
+        std::cerr << "khong tai duoc background texture " << SDL_GetError() << std::endl;
+    }
 }
 
 Game::~Game() {
     if (notificationTexture) {
         SDL_DestroyTexture(notificationTexture);
     }
+    if (backgroundTexture) {
+        SDL_DestroyTexture(backgroundTexture);
+    }
 }
 
 void Game::startNewGame(SDL_Renderer* renderer, int delayMs) {
+    currentDelayMs = delayMs; // Lưu delay ban đầu
     bool running = true;
     SDL_Event e;
     while (running) {
@@ -42,7 +59,7 @@ void Game::startNewGame(SDL_Renderer* renderer, int delayMs) {
                 if (!paused) {
                     snake.changeDirection(e.key.keysym.sym);
                 }
-                //xu li phim
+                // Xu li phim
                 switch (e.key.keysym.sym) {
                     case SDLK_ESCAPE:
                         paused = true; // esc = pause game
@@ -62,9 +79,16 @@ void Game::startNewGame(SDL_Renderer* renderer, int delayMs) {
             }
         }
 
-            if (!paused) {
+        if (!paused) {
             Uint32 currentTime = SDL_GetTicks();
-            // moi dac biet
+            // Thay đổi tốc độ ngẫu nhiên trong Special Mode
+            if (gameMode == 2 && (currentTime - lastSpeedChangeTime) >= 2000) { // Mỗi 2 giây
+                currentDelayMs = 50 + (rand() % 101); // Ngẫu nhiên từ 50 đến 150
+                std::cout << "Special Mode: Speed changed! Current delay: " << currentDelayMs << "ms" << std::endl;
+                lastSpeedChangeTime = currentTime;
+            }
+
+            // Moi dac biet
             if (currentTime - lastSpecialFoodTime >= 15000 && !specialFoodActive) {
                 specialFood.spawn();
                 specialFoodActive = true;
@@ -108,19 +132,24 @@ void Game::startNewGame(SDL_Renderer* renderer, int delayMs) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
+        // Render background
+        if (backgroundTexture) {
+            SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+        }
+
         snake.render(renderer);
         food.render(renderer);
         if (specialFoodActive) {
             specialFood.render(renderer, true);
         }
 
-        // tao thong bao khi dang tam dung
+        // Tao thong bao khi dang tam dung
         if (paused && notificationTexture) {
-            SDL_RenderCopy(renderer, notificationTexture, NULL, &notificationRect);
+            SDL_RenderCopy(renderer, notificationTexture, NULL, &notificationRect); // Sửa cú pháp
         }
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(delayMs);
+        SDL_Delay(currentDelayMs);
     }
 }
 

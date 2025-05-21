@@ -5,7 +5,7 @@
 
 class Game {
 public:
-    Game(SDL_Renderer* renderer);
+    Game(SDL_Renderer* renderer, int mode = 0); // Thêm tham số mode
     ~Game();
     void startNewGame(SDL_Renderer* renderer, int delayMs);
     bool isPaused() const;
@@ -24,4 +24,8 @@ private:
     SDL_Renderer* renderer;
     SDL_Texture* notificationTexture;
     SDL_Rect notificationRect;
+    SDL_Texture* backgroundTexture;
+    int gameMode; // 0: Easy, 1: Hard, 2: Special
+    int currentDelayMs; // Để điều chỉnh tốc độ
+    Uint32 lastSpeedChangeTime; // Theo dõi thời gian thay đổi tốc độ
 };

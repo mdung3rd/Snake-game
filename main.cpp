@@ -5,7 +5,6 @@
 #include "Menu.h"
 
 void showMenu(SDL_Renderer* renderer) {
-    // Load textures
     SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "assets/images/menu.png");
     if (!backgroundTexture) {
         std::cerr << "tai anh nen bi loi " << SDL_GetError() << std::endl;
@@ -41,11 +40,10 @@ void showMenu(SDL_Renderer* renderer) {
 
     bool isMenuActive = true;
     while (isMenuActive) {
-
         Menu menu;
         bool isLevelsMenuActive = false;
         bool isSettingsMenuActive = false;
-        int selectedLevel = -1; // chon level trc khi new game
+        int selectedLevel = -1;
         bool showNotification = false;
         bool hasNotified = false;
 
@@ -63,7 +61,6 @@ void showMenu(SDL_Renderer* renderer) {
                                    easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
                 }
             }
-
 
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
@@ -105,10 +102,9 @@ void showMenu(SDL_Renderer* renderer) {
                 SDL_RenderCopy(renderer, backTexture, NULL, &backButton);
             }
 
-
             if (showNotification && selectedLevel == -1) {
                 if (notificationTexture) {
-                    SDL_RenderCopy(renderer, notificationTexture, NULL, &notificationRect);
+                    SDL_RenderCopy(renderer, notificationTexture, NULL, &notificationRect); // Sửa cú pháp
                 }
             } else {
                 showNotification = false;
@@ -130,8 +126,8 @@ void showMenu(SDL_Renderer* renderer) {
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
                         SDL_RenderPresent(renderer);
-                        Game game(renderer);
-                        game.startNewGame(renderer, 125);
+                        Game game(renderer, 0); // Mode 0: Easy
+                        game.startNewGame(renderer, 150);
                         if (game.isExitToMenu()) {
                             isMenuActive = true;
                             break;
@@ -142,19 +138,19 @@ void showMenu(SDL_Renderer* renderer) {
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
                         SDL_RenderPresent(renderer);
-                        Game game(renderer);
-                        game.startNewGame(renderer, 75);
+                        Game game(renderer, 1); // Mode 1: Hard
+                        game.startNewGame(renderer, 50);
                         if (game.isExitToMenu()) {
                             isMenuActive = true;
                             break;
                         }
-                    } else if (selectedLevel == 12) { // spec
+                    } else if (selectedLevel == 12) { // Special
                         std::cout << "special mode started" << std::endl;
                         isMenuActive = false;
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
                         SDL_RenderPresent(renderer);
-                        Game game(renderer);
+                        Game game(renderer, 2); // Mode 2: Special
                         game.startNewGame(renderer, 100);
                         if (game.isExitToMenu()) {
                             isMenuActive = true;
@@ -202,7 +198,6 @@ void showMenu(SDL_Renderer* renderer) {
             SDL_Delay(10);
         }
     }
-
 
     SDL_DestroyTexture(backgroundTexture);
     SDL_DestroyTexture(newGameTexture);
