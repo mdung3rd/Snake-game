@@ -21,8 +21,13 @@ void showMenu(SDL_Renderer* renderer) {
     SDL_Texture* backTexture = IMG_LoadTexture(renderer, "assets/images/back.png");
     SDL_Texture* notificationTexture = IMG_LoadTexture(renderer, "assets/images/notification.png");
 
+    // Texture cho settings
+    SDL_Texture* reverseSnakeTexture = IMG_LoadTexture(renderer, "assets/images/reverse_snake.png");
+    SDL_Texture* tickTexture = IMG_LoadTexture(renderer, "assets/images/tick.png");
+
     if (!newGameTexture || !settingsTexture || !levelsTexture || !quitTexture ||
-        !easyTexture || !hardTexture || !specialTexture || !backTexture || !notificationTexture) {
+        !easyTexture || !hardTexture || !specialTexture || !backTexture || !notificationTexture ||
+        !reverseSnakeTexture || !tickTexture) {
         std::cerr << "tai menu bi loi " << SDL_GetError() << std::endl;
         SDL_DestroyTexture(backgroundTexture);
         return;
@@ -37,8 +42,11 @@ void showMenu(SDL_Renderer* renderer) {
     SDL_Rect specialButton = {200, 390, 300, 100};
     SDL_Rect backButton = {1100, 600, 150, 100};
     SDL_Rect notificationRect = {640 - 150, 50, 300, 80};
+    SDL_Rect reverseSnakeRect = {1280 / 2 - 150, 720 / 2 - 50, 300, 100}; // Căn giữa màn hình
 
     bool isMenuActive = true;
+    bool reverseMode = false; // Trạng thái reverse mode
+
     while (isMenuActive) {
         Menu menu;
         bool isLevelsMenuActive = false;
@@ -56,8 +64,20 @@ void showMenu(SDL_Renderer* renderer) {
                 if (!isLevelsMenuActive && !isSettingsMenuActive) {
                     menu.handleEvent(e, newGameButton, settingsButton, levelsButton, quitButton,
                                    easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
-                } else {
+                } else if (isLevelsMenuActive) {
                     menu.handleEvent(e, easyButton, hardButton, specialButton, quitButton,
+                                   easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
+                } else if (isSettingsMenuActive) {
+                    // Xử lý sự kiện cho Settings menu
+                    if (e.type == SDL_MOUSEBUTTONDOWN) {
+                        int mouseX = e.button.x;
+                        int mouseY = e.button.y;
+                        if (mouseX >= reverseSnakeRect.x && mouseX <= reverseSnakeRect.x + reverseSnakeRect.w &&
+                            mouseY >= reverseSnakeRect.y && mouseY <= reverseSnakeRect.y + reverseSnakeRect.h) {
+                            reverseMode = !reverseMode; // Toggle trạng thái
+                        }
+                    }
+                    menu.handleEvent(e, easyButton, hardButton, specialButton, backButton,
                                    easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
                 }
             }
@@ -99,12 +119,17 @@ void showMenu(SDL_Renderer* renderer) {
                 SDL_RenderCopy(renderer, backTexture, NULL, &backButton);
             } else if (isSettingsMenuActive) {
                 SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+                SDL_RenderCopy(renderer, reverseSnakeTexture, NULL, &reverseSnakeRect);
+                if (reverseMode) {
+                    SDL_Rect tickRect = {reverseSnakeRect.x + (reverseSnakeRect.w - 50) / 2 + 103, reverseSnakeRect.y + (reverseSnakeRect.h - 50) / 2, 50, 50};
+                    SDL_RenderCopy(renderer, tickTexture, NULL, &tickRect);
+                }
                 SDL_RenderCopy(renderer, backTexture, NULL, &backButton);
             }
 
             if (showNotification && selectedLevel == -1) {
                 if (notificationTexture) {
-                    SDL_RenderCopy(renderer, notificationTexture, NULL, &notificationRect); // Sửa cú pháp
+                    SDL_RenderCopy(renderer, notificationTexture, NULL, &notificationRect);
                 }
             } else {
                 showNotification = false;
@@ -209,6 +234,8 @@ void showMenu(SDL_Renderer* renderer) {
     SDL_DestroyTexture(specialTexture);
     SDL_DestroyTexture(backTexture);
     SDL_DestroyTexture(notificationTexture);
+    SDL_DestroyTexture(reverseSnakeTexture);
+    SDL_DestroyTexture(tickTexture);
 }
 
 int main(int argc, char* argv[]) {
