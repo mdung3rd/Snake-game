@@ -13,4 +13,6 @@
   + Special: Tốc độ rắn sẽ random ngẫu nhiên cứ mỗi 2 giây
 * Khi vào trò chơi, ấn Esc để tạm dừng.
 * Nguồn tham khảo: Youtube để tham khảo sơ qua về game, một số bug khó fix thì dùng AI để tham khảo cách fix
+* Hình ảnh: Tạo từ chat gpt, một số hình ảnh dùng canva để vẽ
+* Font chữ: Tải trên Google Fonts
   
