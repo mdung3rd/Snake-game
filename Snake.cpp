@@ -126,7 +126,6 @@ void Snake::changeDirection(SDL_Keycode key, bool reverseMode) {
     if (!((dx == 0 && dy == -20 && newDy == 20) || (dx == 0 && dy == 20 && newDy == -20) || (dy == 0 && dx == -20 && newDx == 20) || (dy == 0 && dx == 20 && newDx == -20))) {
         dx = newDx;
         dy = newDy;
-        std::cout << "New direction: dx=" << dx << ", dy=" << dy << std::endl;
     }
 }
 
