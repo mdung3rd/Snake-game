@@ -39,7 +39,6 @@ void Snake::update(bool ateFood) {
     newHead.x += dx;
     newHead.y += dy;
 
-    // Xử lý ra ngoài màn hình
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
     if (newHead.x >= SCREEN_WIDTH) {
@@ -66,7 +65,7 @@ void Snake::render(SDL_Renderer* renderer) {
     for (size_t i = 0; i < body.size(); ++i) {
         SDL_Texture* texture = bodyTexture;
         double angle = 0.0;
-        // Xác định góc quay
+        //goc quay
         if (i == 0) {
             texture = headTexture;
             if (dx == 20 && dy == 0) angle = 0;
@@ -98,13 +97,10 @@ void Snake::render(SDL_Renderer* renderer) {
 }
 
 void Snake::changeDirection(SDL_Keycode key, bool reverseMode) {
-    // Log để debug
-    std::cout << "changeDirection called with key: " << key << ", reverseMode: " << (reverseMode ? "true" : "false") << std::endl;
 
     int newDx = dx;
     int newDy = dy;
 
-    // Xác định hướng mới dựa trên phím nhấn
     switch (key) {
         case SDLK_UP:
             if (dy == 0) { newDx = 0; newDy = -20; }
@@ -120,23 +116,17 @@ void Snake::changeDirection(SDL_Keycode key, bool reverseMode) {
             break;
     }
 
-    // Đảo ngược hướng nếu reverseMode là true
     if (reverseMode) {
-        std::cout << "Reverse Mode active, inverting direction..." << std::endl;
-        if (newDx == 0 && newDy == -20) { newDx = 0; newDy = 20; }    // UP -> DOWN
-        else if (newDx == 0 && newDy == 20) { newDx = 0; newDy = -20; } // DOWN -> UP
-        else if (newDx == -20 && newDy == 0) { newDx = 20; newDy = 0; } // LEFT -> RIGHT
-        else if (newDx == 20 && newDy == 0) { newDx = -20; newDy = 0; } // RIGHT -> LEFT
+        if (newDx == 0 && newDy == -20) { newDx = 0; newDy = 20; }
+        else if (newDx == 0 && newDy == 20) { newDx = 0; newDy = -20; }
+        else if (newDx == -20 && newDy == 0) { newDx = 20; newDy = 0; }
+        else if (newDx == 20 && newDy == 0) { newDx = -20; newDy = 0; }
     }
 
-    // Cập nhật hướng nếu không đi ngược lại hướng hiện tại
-    if (!((dx == 0 && dy == -20 && newDy == 20) || (dx == 0 && dy == 20 && newDy == -20) ||
-          (dy == 0 && dx == -20 && newDx == 20) || (dy == 0 && dx == 20 && newDx == -20))) {
+    if (!((dx == 0 && dy == -20 && newDy == 20) || (dx == 0 && dy == 20 && newDy == -20) || (dy == 0 && dx == -20 && newDx == 20) || (dy == 0 && dx == 20 && newDx == -20))) {
         dx = newDx;
         dy = newDy;
         std::cout << "New direction: dx=" << dx << ", dy=" << dy << std::endl;
-    } else {
-        std::cout << "Direction not changed to avoid 180-degree turn." << std::endl;
     }
 }
 

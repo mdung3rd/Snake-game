@@ -20,7 +20,6 @@ void showMenu(SDL_Renderer* renderer) {
     SDL_Texture* specialTexture = IMG_LoadTexture(renderer, "assets/images/special.png");
     SDL_Texture* backTexture = IMG_LoadTexture(renderer, "assets/images/back.png");
     SDL_Texture* notificationTexture = IMG_LoadTexture(renderer, "assets/images/notification.png");
-
     SDL_Texture* reverseSnakeTexture = IMG_LoadTexture(renderer, "assets/images/reverse_snake.png");
     SDL_Texture* tickTexture = IMG_LoadTexture(renderer, "assets/images/tick.png");
 
