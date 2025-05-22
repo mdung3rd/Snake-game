@@ -21,15 +21,10 @@ void showMenu(SDL_Renderer* renderer) {
     SDL_Texture* backTexture = IMG_LoadTexture(renderer, "assets/images/back.png");
     SDL_Texture* notificationTexture = IMG_LoadTexture(renderer, "assets/images/notification.png");
 
-    // Texture cho settings
     SDL_Texture* reverseSnakeTexture = IMG_LoadTexture(renderer, "assets/images/reverse_snake.png");
     SDL_Texture* tickTexture = IMG_LoadTexture(renderer, "assets/images/tick.png");
 
-    if (!newGameTexture || !settingsTexture || !levelsTexture || !quitTexture ||
-        !easyTexture || !hardTexture || !specialTexture || !backTexture || !notificationTexture ||
-        !reverseSnakeTexture || !tickTexture) {
-        std::cerr << "tai menu bi loi " << SDL_GetError() << std::endl;
-        SDL_DestroyTexture(backgroundTexture);
+    if (!newGameTexture || !settingsTexture || !levelsTexture || !quitTexture || !easyTexture || !hardTexture || !specialTexture || !backTexture || !notificationTexture || !reverseSnakeTexture || !tickTexture) { std::cerr << "tai menu bi loi " << SDL_GetError() << std::endl;SDL_DestroyTexture(backgroundTexture);
         return;
     }
 
@@ -42,10 +37,10 @@ void showMenu(SDL_Renderer* renderer) {
     SDL_Rect specialButton = {200, 390, 300, 100};
     SDL_Rect backButton = {1100, 600, 150, 100};
     SDL_Rect notificationRect = {640 - 150, 50, 300, 80};
-    SDL_Rect reverseSnakeRect = {1280 / 2 - 150, 720 / 2 - 50, 300, 100}; // Căn giữa màn hình
+    SDL_Rect reverseSnakeRect = {1280 / 2 - 150, 720 / 2 - 50, 300, 100};
 
     bool isMenuActive = true;
-    bool reverseMode = false; // Trạng thái reverse mode
+    bool reverseMode = false;
 
     while (isMenuActive) {
         Menu menu;
@@ -62,23 +57,18 @@ void showMenu(SDL_Renderer* renderer) {
                     isMenuActive = false;
                 }
                 if (!isLevelsMenuActive && !isSettingsMenuActive) {
-                    menu.handleEvent(e, newGameButton, settingsButton, levelsButton, quitButton,
-                                   easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
+                    menu.handleEvent(e, newGameButton, settingsButton, levelsButton, quitButton, easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
                 } else if (isLevelsMenuActive) {
-                    menu.handleEvent(e, easyButton, hardButton, specialButton, quitButton,
-                                   easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
+                    menu.handleEvent(e, easyButton, hardButton, specialButton, quitButton, easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
                 } else if (isSettingsMenuActive) {
-                    // Xử lý sự kiện cho Settings menu
                     if (e.type == SDL_MOUSEBUTTONDOWN) {
                         int mouseX = e.button.x;
                         int mouseY = e.button.y;
-                        if (mouseX >= reverseSnakeRect.x && mouseX <= reverseSnakeRect.x + reverseSnakeRect.w &&
-                            mouseY >= reverseSnakeRect.y && mouseY <= reverseSnakeRect.y + reverseSnakeRect.h) {
-                            reverseMode = !reverseMode; // Toggle trạng thái
+                        if (mouseX >= reverseSnakeRect.x && mouseX <= reverseSnakeRect.x + reverseSnakeRect.w && mouseY >= reverseSnakeRect.y && mouseY <= reverseSnakeRect.y + reverseSnakeRect.h) {
+                            reverseMode = !reverseMode;
                         }
                     }
-                    menu.handleEvent(e, easyButton, hardButton, specialButton, backButton,
-                                   easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
+                    menu.handleEvent(e, easyButton, hardButton, specialButton, backButton, easyButton, hardButton, specialButton, backButton, isLevelsMenuActive, isSettingsMenuActive);
                 }
             }
 
@@ -89,7 +79,6 @@ void showMenu(SDL_Renderer* renderer) {
                 easyButton.w = 300; easyButton.h = 100;
                 hardButton.w = 300; hardButton.h = 100;
                 specialButton.w = 300; specialButton.h = 100;
-
                 if (selectedLevel == 10) {
                     easyButton.w = 330; easyButton.h = 110;
                     easyButton.x = 200 - (330 - 300) / 2;
@@ -128,9 +117,7 @@ void showMenu(SDL_Renderer* renderer) {
             }
 
             if (showNotification && selectedLevel == -1) {
-                if (notificationTexture) {
-                    SDL_RenderCopy(renderer, notificationTexture, NULL, &notificationRect);
-                }
+                if (notificationTexture) SDL_RenderCopy(renderer, notificationTexture, NULL, &notificationRect);
             } else {
                 showNotification = false;
                 hasNotified = false;
@@ -151,7 +138,7 @@ void showMenu(SDL_Renderer* renderer) {
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
                         SDL_RenderPresent(renderer);
-                        Game game(renderer, 0); // Mode 0: Easy
+                        Game game(renderer, 0, reverseMode);
                         game.startNewGame(renderer, 150);
                         if (game.isExitToMenu()) {
                             isMenuActive = true;
@@ -163,7 +150,7 @@ void showMenu(SDL_Renderer* renderer) {
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
                         SDL_RenderPresent(renderer);
-                        Game game(renderer, 1); // Mode 1: Hard
+                        Game game(renderer, 1, reverseMode);
                         game.startNewGame(renderer, 50);
                         if (game.isExitToMenu()) {
                             isMenuActive = true;
@@ -175,7 +162,7 @@ void showMenu(SDL_Renderer* renderer) {
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
                         SDL_RenderPresent(renderer);
-                        Game game(renderer, 2); // Mode 2: Special
+                        Game game(renderer, 2, reverseMode);
                         game.startNewGame(renderer, 100);
                         if (game.isExitToMenu()) {
                             isMenuActive = true;
@@ -217,7 +204,7 @@ void showMenu(SDL_Renderer* renderer) {
 
             SDL_RenderPresent(renderer);
             if (SDL_GetError()[0] != '\0') {
-                std::cerr << "Renderer error in menu: " << SDL_GetError() << std::endl;
+                std::cerr << "error in menu " << SDL_GetError() << std::endl;
                 SDL_ClearError();
             }
             SDL_Delay(10);
@@ -240,29 +227,21 @@ void showMenu(SDL_Renderer* renderer) {
 
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "Không khởi tạo được SDL: " << SDL_GetError() << std::endl;
+        std::cerr << "khong tao duoc SDL " << SDL_GetError() << std::endl;
         return 1;
     }
-
     if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
-        std::cerr << "Không tạo SDL image: " << SDL_GetError() << std::endl;
+        std::cerr << "Khong tao duoc SDL image: " << SDL_GetError() << std::endl;
         SDL_Quit();
         return 1;
     }
-
-    SDL_Window* window = SDL_CreateWindow(
-        "Snake Game",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        1280, 720,
-        SDL_WINDOW_SHOWN
-    );
+    SDL_Window* window = SDL_CreateWindow("Snake Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_SHOWN);
     if (!window) {
         std::cerr << "khong tao duoc cua so " << SDL_GetError() << std::endl;
         IMG_Quit();
         SDL_Quit();
         return 1;
     }
-
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
         std::cerr << "render bi loi " << SDL_GetError() << std::endl;
@@ -271,9 +250,7 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
-
     showMenu(renderer);
-
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();

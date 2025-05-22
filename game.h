@@ -6,11 +6,12 @@
 
 class Game {
 public:
-    Game(SDL_Renderer* renderer, int mode = 0);
+    Game(SDL_Renderer* renderer, int mode = 0, bool reverseMode = false);
     ~Game();
     void startNewGame(SDL_Renderer* renderer, int delayMs);
     bool isPaused() const;
     bool isExitToMenu() const;
+    void setReverseMode(bool mode); // Thêm phương thức để cập nhật reverseMode
 
 private:
     Snake snake;
@@ -33,20 +34,19 @@ private:
     TTF_Font* font;
     SDL_Texture* scoreTexture;
     SDL_Rect scoreRect;
-    SDL_Texture* gameOverTexture; // Texture cho khung game over (score.png)
-    SDL_Rect gameOverRect; // Vị trí khung game over
-    SDL_Texture* gameOverScoreTexture; // Texture cho điểm và điểm cao trong khung
-    SDL_Rect gameOverScoreRect; // Vị trí hiển thị điểm trong khung
-    bool gameOver; // Trạng thái game over
+    SDL_Texture* gameOverTexture;
+    SDL_Rect gameOverRect;
+    SDL_Texture* gameOverScoreTexture;
+    SDL_Rect gameOverScoreRect;
+    bool gameOver;
 
-    // Biến mới cho settings
-    SDL_Texture* reverseSnakeTexture; // Texture cho reverse_snake.png
-    SDL_Texture* tickTexture; // Texture cho tick.png
-    SDL_Rect reverseSnakeRect; // Vị trí khung reverse_snake
-    bool reverseMode; // Trạng thái reverse mode (true nếu được chọn)
+    SDL_Texture* reverseSnakeTexture;
+    SDL_Texture* tickTexture;
+    SDL_Rect reverseSnakeRect;
+    bool reverseMode;
 
     void updateScoreTexture();
     void loadHighScore();
     void saveHighScore();
-    void showGameOverScreen(); // Hiển thị bảng game over
+    void showGameOverScreen();
 };

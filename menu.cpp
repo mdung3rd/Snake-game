@@ -3,10 +3,7 @@
 Menu::Menu() : selectedOption(-1) {
 }
 
-void Menu::handleEvent(const SDL_Event& e, const SDL_Rect& newGameButton, const SDL_Rect& settingsButton,
-                      const SDL_Rect& levelsButton, const SDL_Rect& quitButton,
-                      const SDL_Rect& easyButton, const SDL_Rect& hardButton, const SDL_Rect& specialButton,
-                      const SDL_Rect& backButton, bool isLevelsMenuActive, bool isSettingsMenuActive) {
+void Menu::handleEvent(const SDL_Event& e, const SDL_Rect& newGameButton, const SDL_Rect& settingsButton, const SDL_Rect& levelsButton, const SDL_Rect& quitButton, const SDL_Rect& easyButton, const SDL_Rect& hardButton, const SDL_Rect& specialButton, const SDL_Rect& backButton, bool isLevelsMenuActive, bool isSettingsMenuActive) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         int x = e.button.x;
         int y = e.button.y;
